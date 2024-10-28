@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}
+Popularity of Items
+{% endblock %}
+
+{% block content %}
+
+<!-- Display the popular and unpopular items -->
+<div class="container mt-4">
+<h3 class="text-center mb-4">Popularity of Items</h3>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group" aria-label="tabs">
+                <input type="radio" class="btn-check" name="tab" id="tab1" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="tab1">Popular</label>
+
+                <input type="radio" class="btn-check" name="tab" id="tab2" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab2">Unpopular</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="content1" class="tab-content active mt-5">
+        <div class="d-flex justify-content-center">
+        {% if popular_items %}
+        <ul class="list-group col-md-8">
+            {% for item in popular_items %}
+                <li class="list-group-item">{{ item.item_name }} - {{ item.order_count }} orders</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+    </div>
+
+    <div id="content2" class="tab-content mt-5">
+        <div class="d-flex justify-content-center">
+        {% if unpopular_items %}
+            <ul class="list-group col-md-8">
+            {% for item in unpopular_items %}
+                <li class="list-group-item">{{ item.item_name }} - {{ item.order_count }} orders</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.btn-check');
+    tabs.forEach(tab => {
+        tab.addEventListener('change', function() {
+            // Remove active class from all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to the selected tab content
+            const selectedContent = document.getElementById('content' + this.id.slice(-1));
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

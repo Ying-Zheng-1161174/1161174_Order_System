@@ -1,0 +1,80 @@
+{% extends 'base.html' %} 
+{% block title %} Order History {% endblock %} 
+
+{% block content %}
+
+<!-- List of order history -->
+<div class="container mt-4">
+    
+<!-- Successful message -->
+{% if request.args.get('msg') %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ request.args.get('msg') }}
+    <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"></button>
+    </div>
+{% endif %}
+
+{% if order_history %}
+   <h3 class="text-center mb-4">Order History</h3>
+   {% if session.get('role') != 'staff' %}
+   <p class="text-muted">Your current balance is ${{ "%.2f"|format(customer_balance) }}</p>
+   {% endif %}
+
+   <!-- Display some specific information based on the role of the current logged in user -->
+    <table class="table text-center table-bordered">
+        <tr>
+            <th>Date</th>
+            {% if session.get('role') == 'staff' %}
+            <th>Customer</th>
+            {% endif %}
+            <th>Order Number</th>
+            <th>Total</th>
+            {% if session.get('role') != 'staff' %}
+            <th>Payment</th>
+            <th>Delivery</th>
+            {% endif %}
+            {% if session.get('role') == 'staff' %}
+            <th>Type</th>
+            {% endif %}
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        {% for item in order_history %}
+        <tr>
+            <td>{{ item.order.orderDate }}</td>
+            {% if session.get('role') == 'staff' %}
+            <td>{{ item.order.customer.firstname }} {{ item.order.customer.lastname }}</td>
+            {% endif %}
+            <td>{{ item.order.orderNumber }}</td>
+            <td>${{ "%.2f"|format(item.total) }}</td>
+            {% if session.get('role') != 'staff' %}
+            <td>{{ item.order.paymentMethod }}</td>
+            <td>{{ item.order.deliveryMethod }}</td>
+            {% endif %}
+            {% if session.get('role') == 'staff' %}
+                {% if item.order.customer.type == 'corporate_customer' %}
+                <td>Corporate</td>
+                {% else %}
+                <td>Private</td>
+                {% endif %}
+            {% endif %}
+            <td>{{ item.order.orderStatus }}</td>
+            <td><a href="{{ url_for('order_details', order_id=item.order.id) }}" class="btn btn-outline-success btn-sm">View Details</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    {% if session.get('role') != 'staff' %}
+    <p>Your have not made any orders.</p>
+    {% else %}
+    <p>There are no orders.</p>
+    {% endif %}
+{% endif %}
+</div>
+
+
+{% endblock%}

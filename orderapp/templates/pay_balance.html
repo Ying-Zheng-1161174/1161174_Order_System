@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Pay Balance{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+<!-- Successful add to the cart -->
+{% if request.args.get('msg') %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+{{ request.args.get('msg') }}
+<button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"></button>
+</div>
+{% endif %}
+
+<!-- Make payment to the current customer's balance -->
+<h3 class="text-center mb-4">Pay Balance</h3>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+        <div class="btn-group w-100" role="group" aria-label="Payment tabs">
+            <input type="radio" class="btn-check" name="payment-tab" id="tab1" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="tab1">Credit Card</label>
+
+            <input type="radio" class="btn-check" name="payment-tab" id="tab2" autocomplete="off">
+            <label class="btn btn-outline-success" for="tab2">Debit Card</label>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div id="content1" class="tab-content active card">
+            <div class="card-body">
+                <form
+                    action="{{ url_for('pay_balance') }}"
+                    method="POST"
+                    class="needs-validation"
+                    novalidate>
+                    <p>Your current balance is ${{ "%.2f"|format(customer_balance) }}</p>
+                    <div class="mb-3">
+                        <label for="paid_amount" class="form-label">Enter the amount you want to pay:</label>
+                        <input type="number" id="paid_amount" name="paid_amount" min="0" max="{{ customer_balance }}" step="0.01" required
+                               class="form-control" style="width: 200px;">
+                        <div class="invalid-feedback">The amount must be less or equal to your balance.</div>
+                    </div>
+                    <div class="mb-3">
+                    <label for="card_type" class="form-label">Card Type</label>
+                    <input
+                        type="text"
+                        name="card_type"
+                        id="card_type"
+                        class="form-control"
+                        placeholder="eg. Visa, Mastercard, etc."
+                        required />
+                    <div class="invalid-feedback">Please enter a card type</div>
+                    </div>
+                    <div class="mb-3">
+                    <label for="card_number" class="form-label">Card Number</label>
+                    <input
+                        type="text"
+                        name="card_number"
+                        id="card_number"
+                        class="form-control"
+                        pattern="\d{16}"
+                        maxlength="16"
+                        placeholder="Card number must be 16 digits"
+                        required>
+                    <div class="invalid-feedback">Card number must be 16 digits</div>
+                    </div>
+                    <div class="mb-3">
+                    <label for="card_expiry_date" class="form-label">Card Expiry Date</label>
+                    <input
+                        type="date"
+                        name="card_expiry_date"
+                        id="card_expiry_date"
+                        class="form-control"
+                        min="{{ currentdate }}"
+                        required>
+                    <div class="invalid-feedback">Expiry date must be in the future</div>
+                    </div>
+                    <button type="submit" class="btn btn-success bg-opacity-75">
+                        Confirm Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="content2" class="tab-content card">
+            <div class="card-body">
+                <form
+                    action="{{ url_for('pay_balance') }}"
+                    method="POST"
+                    class="needs-validation"
+                    novalidate>
+                    <p>Your current balance is ${{ "%.2f"|format(customer_balance) }}</p>
+                    <div class="mb-3">
+                        <label for="paid_amount" class="form-label">Enter the amount you want to pay:</label>
+                        <input type="number" id="paid_amount" name="paid_amount" min="0" max="{{ customer_balance }}" step="0.01" required
+                               class="form-control" style="width: 200px;">
+                        <div class="invalid-feedback">The amount must be less or equal to your balance.</div>
+                    </div>
+                    <div class="mb-3">
+                    <label for="bank_name" class="form-label">Bank Name</label>
+                    <input
+                        type="text"
+                        name="bank_name"
+                        id="bank_name"
+                        class="form-control"
+                        placeholder="eg. ANZ, ASB, etc."
+                        required />
+                    <div class="invalid-feedback">Please enter a bank name</div>
+                    </div>
+                    <div class="mb-3">
+                    <label for="debit_card_number" class="form-label">Card Number</label>
+                    <input
+                        type="text"
+                        name="debit_card_number"
+                        id="debit_card_number"
+                        class="form-control"
+                        pattern="\d{16}"
+                        maxlength="16"
+                        placeholder="Card number must be 16 digits"
+                        required>
+                    <div class="invalid-feedback">Card number must be 16 digits</div>
+                    </div>
+                    <button type="submit" class="btn btn-success bg-opacity-75">
+                        Confirm Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.btn-check');
+    tabs.forEach(tab => {
+        tab.addEventListener('change', function() {
+            // Remove active class from all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to the selected tab content
+            const selectedContent = document.getElementById('content' + this.id.slice(-1));
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

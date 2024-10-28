@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Report{% endblock %}
+
+{% block content %}
+
+<!-- Total Sales Report Page -->
+<div class="container mt-4">
+<h3 class="text-center mb-4">Total Sales Report</h3>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group" aria-label="report tabs">
+                <input type="radio" class="btn-check" name="report-tab" id="tab1" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="tab1">Weekly</label>
+
+                <input type="radio" class="btn-check" name="report-tab" id="tab2" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab2">Monthly</label>
+
+                <input type="radio" class="btn-check" name="report-tab" id="tab3" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab3">Yearly</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="content1" class="tab-content active mt-5">
+        <div class="d-flex flex-column align-items-center">
+            {% if weekly_sales %}
+                {% for week, sales in weekly_sales.items() %}
+                    <p class="mb-4">{{ week }}: ${{ "%.2f"|format(sales) }}</p>
+                {% endfor %}
+            {% else %}
+                <p>No sales data available for the week.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="content2" class="tab-content mt-5">
+        <div class="d-flex flex-column align-items-center">
+        {% if monthly_sales %}
+            {% for month, sales in monthly_sales.items() %}
+                <p class="mb-4 ms-2">{{ month }}: ${{ "%.2f"|format(sales) }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No sales data available for the month.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="content3" class="tab-content mt-5">
+        <div class="d-flex flex-column align-items-center">
+            {% if yearly_sales %}
+                {% for year, sales in yearly_sales.items() %}
+                <p class="mb-4 ms-2">{{ year }}: ${{ "%.2f"|format(sales) }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No sales data available for the year.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.btn-check');
+    tabs.forEach(tab => {
+        tab.addEventListener('change', function() {
+            // Remove active class from all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to the selected tab content
+            const selectedContent = document.getElementById('content' + this.id.slice(-1));
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

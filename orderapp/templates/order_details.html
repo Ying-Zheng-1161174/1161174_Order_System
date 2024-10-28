@@ -1,0 +1,136 @@
+{% extends 'base.html' %} 
+{% block title %} Order Details {% endblock %} 
+
+{% block content %}
+
+<!-- Order Details Page -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <!-- Successful message -->
+            {% if request.args.get('msg') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ request.args.get('msg') }}
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"></button>
+            </div>
+            {% endif %}
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Order #{{ order.orderNumber }}</h2>
+                        {% if session.get('role') == 'staff' %}
+                        <form action="{{ url_for('update_order_status') }}" method="post" class="d-flex align-items-center">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="new_status" class="form-select form-select-sm me-2">
+                                <option value="Pending" {% if order.orderStatus == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Processed" {% if order.orderStatus == 'Processed' %}selected{% endif %}>Processed</option>
+                                <option value="Completed" {% if order.orderStatus == 'Completed' %}selected{% endif %}>Completed</option>
+                                <option value="Cancelled" {% if order.orderStatus == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-warning btn-sm">Confirm</button>
+                        </form>
+                        {% elif order.orderStatus == 'Pending' and session.get('role') != 'staff' %}
+                        <a href="{{ url_for('cancel_order', order_id=order.id) }}" 
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to cancel this order?');"
+                            >Cancel</a>
+                        {% elif order.orderStatus != 'Pending' and session.get('role') != 'staff' %}
+                        <button class="btn btn-secondary btn-sm" disabled>Cancel</button>
+                        {% endif %}
+                    </div>
+                    
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order['items'] %}
+                            <tr>
+                                <td class="w-50">
+                                    {{ item.name }}
+                                    {% if item.contents %}
+                                        <br><small>({{ item.contents|join(', ') }})</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ "%.2f"|format(item.unit_price) }}</td>
+                                <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if order.deliveryMethod == 'Delivery' %}
+                            <tr>
+                                <td>Delivery</td>
+                                <td></td>
+                                <td></td>
+                                <td>$10.00</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+                    <!-- Other Order Details -->
+                    <table class="table mt-4">
+                        <tr>
+                            <th>Date</th>
+                            <td class="text-end">{{ order.orderDate }}</td>
+                        </tr>
+                        <tr>
+                            <th>Delivery</th>
+                            <td class="text-end">{{ order.deliveryMethod }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment</th>
+                            <td class="text-end">{{ order.paymentMethod }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td class="text-end">{{ order.orderStatus }}</td>
+                        </tr>
+                        {% if session.get('role') == 'corporate_customer' or 
+                        (session.get('role') == 'staff' and order.customer.type == 'corporate_customer') %}
+                        <tr>
+                            <th>Discount</th>
+                            <td class="text-end">10%</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Total</th>
+                            <td class="text-end">${{ "%.2f"|format(order.total) }}</td>
+                        </tr>
+                    </table>   
+
+                    <!-- Customer Information -->
+                    <div class="mb-4 mt-4">
+                        <h6>Customer Information:</h6>
+                        <p><strong>Name:</strong><br> 
+                            {{ order.customer.firstName }} {{ order.customer.lastName }}</p>
+                        <p><strong>Shipping Address:</strong><br>
+                        {{ order.customer.custAddress }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    {% if session.get('role') != 'staff' %}
+                    <a href="{{ url_for('order_history', order_id=order.id) }}" class="btn btn-outline-primary" on>Go Back</a>
+                    {% else %}
+                    <a href="{{ url_for('view_all_orders') }}" class="btn btn-outline-primary" on>Go Back</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

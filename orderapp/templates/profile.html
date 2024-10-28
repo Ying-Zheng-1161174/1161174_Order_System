@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+
+<!-- Display a customer's profile -->
+<div class="container mt-4">
+    <h3 class="mb-4 text-center">Profile</h3>
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <table class="table table-bordered">
+            <tr>
+                <th>Username:</th>
+                <td>{{ profile['username'] }}</td>
+            </tr>
+            <tr>
+                <th>First Name:</th>
+                <td>{{ profile['firstname'] }}</td>
+            </tr>
+            <tr>
+                <th>Last Name:</th>
+                <td>{{ profile['lastname'] }}</td>
+            </tr>
+            <tr>
+                <th>Address:</th>
+                <td>{{ profile['address'] }}</td>
+            </tr>
+            <tr>
+                <th>Balance:</th>
+                <td>{{ profile['balance'] }}</td>
+            </tr>
+            <tr>
+                <th>Max Owing:</th>
+                <td>{{ profile['maxOwing'] }}</td>
+            </tr>
+            </table>
+        </div>
+        {% if session.get('role') == 'staff' %}
+        <div class="d-flex justify-content-center">
+            <a href="{{ url_for('customer_list') }}" class="btn btn-primary btn-sm">Go Back</a>
+        </div>
+        {% endif %}
+</div>
+
+{% endblock %}

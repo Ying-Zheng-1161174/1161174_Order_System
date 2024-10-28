@@ -1,0 +1,16 @@
+{% extends 'base.html' %} 
+{% block title %} Error {% endblock %} 
+
+{% block content %}
+
+<!-- Error Message Display -->
+<div class="container mt-4">
+  {% if error %}
+  <div class="alert alert-danger shadow p-3 mb-5 rounded">
+    <h4 class="alert-heading">Error</h4>
+    <p class="mb-0">{{ error }}</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock%}

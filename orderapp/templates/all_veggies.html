@@ -1,0 +1,105 @@
+{% extends 'base.html' %} 
+{% block title %} All Veggies and Premade Boxes {% endblock %} 
+
+{% block content %}
+
+<!-- All Veggies Page, only accessible to staff -->
+<div class="container mt-4">
+    <h5 class="mb-4 text-center">Weighted Veggies:</h5>
+    <div class="d-flex justify-content-center">
+        <table class="table table-striped veggie-table mb-5 text-center">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for veggie in weighted_veggies %}
+                <tr>
+                    <td>{{ veggie.vegName }}</td>
+                    <td>Weighted</td>
+                    <td>${{ veggie.weightPerKilo }}/kg</td>
+                    <td>{{ veggie.stock }} kg</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <h5 class="mb-4 text-center">Pack Veggies:</h5>
+    <div class="d-flex justify-content-center">
+        <table class="table table-striped veggie-table mb-5 text-center">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for veggie in pack_veggies %}
+            <tr>
+                <td>{{ veggie.vegName }}</td>
+                <td>Pack</td>
+                <td>${{ veggie.pricePerPack }}/pack</td>
+                <td>{{ veggie.stock }} packs</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h5 class="mb-4 text-center">Unit Price Veggies:</h5>
+    <div class="d-flex justify-content-center">
+        <table class="table table-striped veggie-table mb-5 text-center">
+            <thead>
+                <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for veggie in unit_price_veggies %}
+            <tr>
+                <td>{{ veggie.vegName }}</td>
+                <td>Unit</td>
+                <td>${{ veggie.pricePerUnit }}/unit</td>
+                <td>{{ veggie.stock }} units</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h5 class="mb-4 text-center">Premade Boxes:</h5>
+        <table class="table table-striped mb-5">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                <th>Price</th>
+                <th>Size</th>
+                <th>Stock</th>
+                <th>Contents</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for box in premade_boxes %}
+            <tr>
+                <td class="w-10">{{ box.boxSize }} Box</td>
+                <td class="w-10">${{ box.get_price() }}</td>
+                <td class="w-10">{{ box.boxSize }}</td>
+                <td class="w-10">{{ box.stock }} boxes</td>
+                <td class="w-50">{{ box.get_contents()|map(attribute='vegName')|join(', ') }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+{% endblock %}

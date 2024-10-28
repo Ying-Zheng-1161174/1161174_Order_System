@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+{% block title %} Place Order {% endblock %} 
+
+{% block content %}
+
+<!-- Process Payment Page -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Make Payment</h3>
+                    <p class="card-text text-center mb-4">Total Price: <strong>${{ total_price }}</strong></p>
+                    <form action="{{ url_for('place_order_and_process_payment') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Select your payment method:</label>
+                            <select name="payment_method" id="payment_method" class="form-select">
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Account">Account</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="delivery_method" value="{{ delivery_method }}">
+                        <input type="hidden" name="total_price" value="{{ total_price }}">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Make Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

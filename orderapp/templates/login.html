@@ -1,0 +1,70 @@
+{% extends 'base.html' %} 
+{% block title %} Login {% endblock %} 
+
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-10 col-md-8 col-lg-6">
+      <h2 class="text-center mb-4">Login</h2>
+      
+      <!-- Display error message when login failed -->
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"></button>
+      </div>
+      {% endif %}
+
+      <!-- Login page -->
+      <div class="card">
+        <img
+          src="/static/login.png"
+          class="card-img-top"
+          alt="card-img" />
+        <div class="card-body">
+          <form
+            action="{{ url_for('login')}}"
+            method="post"
+            class="needs-validation"
+            novalidate>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Username"
+                class="form-control"
+                required />
+              <div class="invalid-feedback">Please enter your username</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="form-control"
+                required />
+              <div class="invalid-feedback">Please enter your password</div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success bg-opacity-75">
+                Log In
+              </button>
+            </div>
+          </form>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
+{% endblock %}

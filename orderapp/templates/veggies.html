@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}Vegetables{% endblock %}
+
+{% block content %}
+
+<!-- Display the available veggies and premade boxes -->
+<div class="container mt-4">
+<!-- Successful add to the cart -->
+ {% if request.args.get('msg') %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ request.args.get('msg') }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"></button>
+      </div>
+  {% endif %}
+
+<!-- No quantity entered -->
+  {% if request.args.get('error') %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"></button>
+      </div>
+  {% endif %}
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group w-100" role="group" aria-label="Veggie tabs">
+                <input type="radio" class="btn-check" name="veggie-tab" id="tab1" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="tab1">Weighted Veggie</label>
+
+                <input type="radio" class="btn-check" name="veggie-tab" id="tab2" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab2">Pack Veggie</label>
+
+                <input type="radio" class="btn-check" name="veggie-tab" id="tab3" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab3">Unit Veggie</label>
+
+                <input type="radio" class="btn-check" name="veggie-tab" id="tab4" autocomplete="off">
+                <label class="btn btn-outline-success" for="tab4">Premade Box</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="content1" class="tab-content active">
+        <h4 class="mb-3">Weighted Veggies</h4>
+        <div class="row">
+            {% for veggie in veggies.weighted %}
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ veggie.vegName }}</h5>
+                            <p class="card-text">Price: ${{ veggie.weightPerKilo }}/kg</p>
+                            <p class="card-text">Stock: {{ veggie.stock }}</p>
+                            <form action="{{ url_for('add_to_cart') }}" method="post">
+                                <input type="hidden" name="item_id" value="{{ veggie.id }}">
+                                <input type="hidden" name="item_type" value="weighted">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="quantity" value="1" min="0.1" max="{{ veggie.stock }}" step="0.1">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">kg</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="content2" class="tab-content">
+        <h4 class="mb-3">Pack Veggies</h4>
+        <div class="row">
+            {% for veggie in veggies.pack %}
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ veggie.vegName }}</h5>
+                            <p class="card-text">Price: ${{ veggie.pricePerPack }}/pack</p>
+                            <p class="card-text">Stock: {{ veggie.stock }}</p>
+                            <form action="{{ url_for('add_to_cart') }}" method="post">
+                                <input type="hidden" name="item_id" value="{{ veggie.id }}">
+                                <input type="hidden" name="item_type" value="pack">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="quantity" value="1" min="1" max="{{ veggie.stock }}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">pack(s)</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="content3" class="tab-content">
+        <h4 class="mb-3">Unit Price Veggies</h4>
+        <div class="row">
+            {% for veggie in veggies.unit_price %}
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ veggie.vegName }}</h5>
+                            <p class="card-text">Price: ${{ veggie.pricePerUnit }}/unit</p>
+                            <p class="card-text">Stock: {{ veggie.stock }}</p>
+                            <form action="{{ url_for('add_to_cart') }}" method="post">
+                                <input type="hidden" name="item_id" value="{{ veggie.id }}">
+                                <input type="hidden" name="item_type" value="unit_price">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="quantity" value="1" min="1" max="{{ veggie.stock }}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">unit(s)</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="content4" class="tab-content">
+        <h4 class="mb-3">Premade Boxes</h4>
+        <div class="row">
+            {% for box in premade_boxes %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ box.boxSize }} Box</h5>
+                            <p class="card-text">Price: ${{ box.price }}</p>
+                            <p class="card-text">Stock: {{ box.stock }}</p>
+                            <p class="card-text">Default Contents: {{ box.contents|join(', ') }}</p>
+                            
+                            <form action="{{ url_for('add_to_cart') }}" method="post">
+                                <input type="hidden" name="item_id" value="{{ box.id }}">
+                                <input type="hidden" name="item_type" value="premade_box">
+                                
+                                <div class="mb-3">
+                                    <label for="customizeBox{{ box.id }}" class="customize-box-label">Customize Box:</label>
+                                    <input type="checkbox" id="customizeBox{{ box.id }}" name="customize_box" value="1">
+                                </div>
+                                
+                                <div id="customOptions{{ box.id }}" style="display: none;">
+                                    <h6>Choose your veggies:</h6>
+                                    {% for veggie in veggies.weighted %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
+                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
+                                                {{ veggie.vegName }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                    {% for veggie in veggies.pack %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
+                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
+                                                {{ veggie.vegName }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                    {% for veggie in veggies.unit_price %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
+                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
+                                                {{ veggie.vegName }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="quantity" value="1" min="1" max="{{ box.stock }}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">box(es)</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.btn-check');
+    const contents = document.querySelectorAll('.tab-content');
+
+    function showSelectedContent(tabId) {
+        contents.forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById('content' + tabId.slice(-1)).classList.add('active');
+    }
+
+    // Set initial state
+    showSelectedContent('tab1');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('change', function() {
+            showSelectedContent(this.id);
+        });
+    });
+
+    // Toggle custom options visibility
+    const customizeBoxes = document.querySelectorAll('input[name="customize_box"]');
+    customizeBoxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const boxId = this.id.replace('customizeBox', '');
+            const customOptions = document.getElementById(`customOptions${boxId}`);
+            customOptions.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

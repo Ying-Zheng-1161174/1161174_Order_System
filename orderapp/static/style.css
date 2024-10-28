@@ -1,0 +1,33 @@
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.btn-check:checked + .btn-outline-primary {
+    background-color: #047734;
+    color: white;
+}
+
+.veggie-table th,
+.veggie-table td {
+    width: 25%;
+}
+
+.nav-link {
+    padding: 0.25rem 0;
+    font-weight: 500;
+    color: black;
+    margin-left: 1rem;
+}
+
+.nav-link:hover {
+    color: black;
+    font-weight: 800;
+}
+
+.customize-box-label {
+    cursor: pointer;
+}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %} Account Payment {% endblock %}
+
+{% block content %}
+
+<!-- Account Payment Page -->
+<div class="container d-flex justify-content-center align-items-center">
+  <div class="col-md-8 col-lg-6">
+  <div class="card shadow mt-5">
+    <div class="card-body">
+      <h2 class="card-title text-center mb-4">Account Payment</h2>
+      
+      <p class="card-text">Price for new order: <strong>${{ total_price }}</strong></p>
+      <p class="card-text">Your current balance: ${{ customer_balance }}</p>
+      {% if session.get('role') == 'corporate_customer' %}
+      <p class="card-text">Your max credit: ${{ max_owning }}</p>
+      {% else %}
+      <p class="card-text">Your max owing: ${{ max_owning }}</p>
+      {% endif %}
+      
+      <!-- Only eligible to charge if the new balance is less than the max owing -->
+      {% if can_charge %}
+      <form action="{{ url_for('add_account_payment') }}" method="POST" class="needs-validation" novalidate>
+        <input type="hidden" name="total_price" value="{{ total_price }}">
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <div class="text-center">
+          <button type="submit" class="btn btn-success bg-opacity-75">Confirm</button>
+        </div>
+      </form>
+      {% else %}
+      <p class="card-text">The new balance will <strong class="text-danger">exceed</strong> your max owing. Please pay with a different payment method.</p>
+      <div class="text-center">
+        <a href="{{ url_for('view_cart') }}" class="btn btn-outline-primary">Go Back</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock %}

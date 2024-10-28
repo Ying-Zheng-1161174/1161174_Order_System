@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body class="d-flex flex-column vh-100">
+    <nav
+      class="navbar navbar-expand-lg bg-light fixed-top border-bottom">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('home')}}">
+          <img src="/static/logo.png" alt="Fresh Harvest Veggies" width="70" height="40" />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <!-- Display login button if not logged in -->
+            {% if 'loggedin' not in session %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+            </li>
+
+            <!-- Display other buttons after logged in -->
+           {% else %}
+            <li class="nav-item nav-link">
+              Hi {{ session['username'] }}
+            </li>
+
+            <!-- Display customer's buttons -->
+            {% if session.get('role') != 'staff' %}
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('view_veggies') }}">
+                  Vegetables
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('view_cart') }}">
+                  View Cart
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('order_history') }}">
+                  Order History
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('pay_balance') }}">
+                  Pay Balance
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('payment_history') }}">
+                  Payment History
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('profile') }}">
+                  Profile
+                </a>
+              </li>
+              {% endif %}
+
+              <!-- Display staff's buttons -->
+              {% if 'loggedin' in session and session.get('role') == 'staff' %}
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('view_all_veggies') }}">
+                  Veggies
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('view_all_orders') }}">
+                  Orders
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('customer_list') }}">
+                  Customers
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('report') }}">
+                  Report
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{{ url_for('popularity') }}">
+                  Popularity
+                </a>
+              </li>
+              {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">Log out</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+        <!-- Main content area -->
+        <main
+          class="px-md-4">
+          <div class="container-fluid mt-5 py-4">
+            {% block content %}{% endblock %}
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <footer class="footer text-center mt-auto">
+      <div class="container">
+        <span class="mb-0 text-muted">Fresh Harvest Veggies</span>
+      </div>
+    </footer>
+    <script>
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (() => {
+        "use strict";
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll(".needs-validation");
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

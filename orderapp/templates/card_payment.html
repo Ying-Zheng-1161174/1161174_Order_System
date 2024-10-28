@@ -1,0 +1,111 @@
+{% extends 'base.html' %} 
+{% block title %} Card Payment {% endblock %} 
+
+{% block content %}
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow mt-5">
+        <div class="card-body">
+          <!-- Render the correct form based on the payment method -->
+          {% if payment_method == 'Credit Card' %}
+          <h2 class="card-title mb-4">Credit Card Payment</h2>
+          <p class="card-text">Total Price: {{ total_price }}</p>
+          <form
+            action="{{ url_for('add_credit_card_payment') }}"
+            method="POST"
+            class="needs-validation"
+            novalidate>
+            <div class="mb-3">
+              <label for="card_type" class="form-label">Card Type</label>
+              <input
+                type="text"
+                name="card_type"
+                id="card_type"
+                class="form-control"
+                placeholder="eg. Visa, Mastercard, etc."
+                required />
+              <div class="invalid-feedback">Please enter a card type</div>
+            </div>
+            <div class="mb-3">
+              <label for="card_number" class="form-label">Card Number</label>
+              <input
+                type="text"
+                name="card_number"
+                id="card_number"
+                class="form-control"
+                pattern="\d{16}"
+                maxlength="16"
+                placeholder="Card number must be 16 digits"
+                required>
+              <div class="invalid-feedback">Card number must be 16 digits</div>
+            </div>
+            <div class="mb-3">
+              <label for="card_expiry_date" class="form-label">Card Expiry Date</label>
+              <input
+                type="date"
+                name="card_expiry_date"
+                id="card_expiry_date"
+                class="form-control"
+                min="{{ currentdate }}"
+                required>
+              <div class="invalid-feedback">Expiry date must be in the future</div>
+            </div>
+            <input type="hidden" name="total_price" value="{{ total_price }}">
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <div>
+              <button type="submit" class="btn btn-success bg-opacity-75">
+                Confirm Payment
+              </button>
+            </div>
+          </form>
+
+          {% elif payment_method == 'Debit Card' %}
+          <h2 class="card-title mb-4">Debit Card Payment</h2>
+          <p class="card-text">Total Price: {{ total_price }}</p>
+          <form
+            action="{{ url_for('add_debit_card_payment') }}"
+            method="POST"
+            class="needs-validation"
+            novalidate>
+            <div class="mb-3">
+              <label for="bank_name" class="form-label">Bank Name</label>
+              <input
+                type="text"
+                name="bank_name"
+                id="bank_name"
+                class="form-control"
+                placeholder="eg. ANZ, ASB, etc."
+                required />
+              <div class="invalid-feedback">Please enter a bank name</div>
+            </div>
+            <div class="mb-3">
+              <label for="debit_card_number" class="form-label">Card Number</label>
+              <input
+                type="text"
+                name="debit_card_number"
+                id="debit_card_number"
+                class="form-control"
+                pattern="\d{16}"
+                maxlength="16"
+                placeholder="Card number must be 16 digits"
+                required>
+              <div class="invalid-feedback">Card number must be 16 digits</div>
+            </div>
+            <input type="hidden" name="total_price" value="{{ total_price }}">
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <div>
+              <button type="submit" class="btn btn-success bg-opacity-75">
+                Confirm Payment
+              </button>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

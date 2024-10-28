@@ -1,0 +1,58 @@
+{% extends 'base.html' %} 
+{% block title %} Cart {% endblock %} 
+
+{% block content %}
+
+<div class="container mt-4">
+<!-- Display cart if it exists -->
+{% if cart %}
+<h3 class="mb-4 text-center">Your shopping cart</h3>
+    <table class="table table-bordered">
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
+        {% for item in cart %}
+        <tr>
+            <td class="w-50">{{ item.name }}
+            {% if item.type == 'premade_box' and item.contents %}
+                <br><small>({{ item.contents | join(', ') }})</small>
+            </td>
+            {% endif %}
+            <td>{{ item.quantity }}</td>
+            <td>${{ "%.2f" | format(item.price) }}</td>
+            <td>${{ "%.2f" | format(item.subtotal) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if session.get('role') == 'corporate_customer' %}
+    <p>Discount: 10%</p>
+    <p>Discounted Price: ${{ "%.2f" | format(subtotal) }}</p>
+    {% else %}
+    <p>Subtotal Price: ${{ "%.2f" | format(subtotal) }}</p>
+    {% endif %}
+    <form action="{{ url_for('process_payment') }}" method="POST">
+        <input type="hidden" name="subtotal" value="{{ subtotal }}">
+         <div class="d-flex align-items-center">
+            <!-- Delivery method selection -->
+            <label for="delivery_method" class="me-2">Delivery Method:</label>
+            <select name="delivery_method" id="delivery_method" class="form-select" style="width: auto;">
+                <option value="Pickup" default>Pickup</option>
+                <option value="Delivery">Delivery + $10.00 (Only within a 20-kilometer radius)</option>
+            </select>
+        </div>
+        <div class="d-flex justify-content-start">
+            <!-- Place order button -->
+            <button type="submit" class="btn btn-success mt-3">Place Order</button>
+            <!-- Clear cart button -->
+            <a href="{{ url_for('clear_cart') }}" class="btn btn-outline-danger mt-4 ms-4">Clear Cart</a>
+        </div>
+    </form>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+</div>
+
+{% endblock%}

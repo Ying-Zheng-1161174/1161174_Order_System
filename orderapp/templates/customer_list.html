@@ -1,0 +1,38 @@
+{% extends 'base.html' %} 
+{% block title %} Customer List {% endblock %} 
+
+{% block content %}
+
+<!-- Customer List Page, only accessible to staff -->
+<div class="container mt-4">
+{% if customer_list %}
+   <h3 class="text-center mb-4">Customer List</h3>
+    <table class="table text-center table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Details</th>
+        </tr>
+
+        {% for customer in customer_list %}
+        <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+            {% if customer.type == 'private_customer' %}
+            <td>Private Customer</td>
+            {% elif customer.type == 'corporate_customer' %}
+            <td>Corporate Customer</td>
+            {% endif %}
+            <td><a href="{{ url_for('customer_details', customer_id=customer.id) }}" class="btn btn-outline-success btn-sm">View Details</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>There are no customers.</p>
+{% endif %}
+</div>
+
+
+{% endblock%}

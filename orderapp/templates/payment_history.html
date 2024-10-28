@@ -1,0 +1,36 @@
+{% extends 'base.html' %} 
+{% block title %} Payment History {% endblock %} 
+
+{% block content %}
+
+<div class="container mt-4">
+
+{% if payment_history %}
+   <h3 class="text-center mb-4">Payment History</h3>
+    <table class="table text-center table-bordered">
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Payment Method</th>
+            <th>Order Number</th>
+        </tr>
+        {% for payment in payment_history %}
+        <tr>
+            <td>{{ payment.date }}</td>
+            <td>${{ "%.2f"|format(payment.amount) }}</td>
+            {% if payment.method == 'credit_card_payment' %}
+            <td>Credit Card</td>
+            {% elif payment.method == 'debit_card_payment' %}
+            <td>Debit Card</td>
+            {% elif payment.method == 'account_payment' %}
+            <td>Account</td>
+            {% endif %}
+            <td>{{ payment.order_number }}</td>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Your have not made any payments.</p>
+{% endif %}
+</div>
+
+{% endblock%}
