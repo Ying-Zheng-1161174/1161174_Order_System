@@ -2,7 +2,7 @@ import pymysql
 pymysql.install_as_MySQLdb()
 
 class Config:
-    """Configuration settings for the application.."""
+    """Configuration settings for the application."""
 
     SECRET_KEY = 'thisismysessionkey'
     PASSWORD_SALT = 'thisismypasswordsalt'
