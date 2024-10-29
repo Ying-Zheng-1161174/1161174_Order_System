@@ -92,9 +92,10 @@ class Staff(User):
         """
         return db.session.query(Veggie).all()
 
-    def __init__(self, firstname, lastname, username, password, deptName):
+    def __init__(self, firstname, lastname, username, password, deptName, dateJoined=None):
         super().__init__(firstname, lastname, username, password)
         self.deptName = deptName
+        self.dateJoined = dateJoined or date.today()
 
     def update_order_status(self, order_id, new_status):
         """

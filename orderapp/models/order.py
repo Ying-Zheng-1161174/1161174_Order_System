@@ -29,12 +29,13 @@ class Order(db.Model):
         """
         return self.order_lines
 
-    def __init__(self, orderNumber, customer, deliveryMethod, paymentMethod, orderStatus='Pending'):
+    def __init__(self, orderNumber, customer, deliveryMethod, paymentMethod, orderStatus='Pending', orderDate=None):
         self.orderNumber = orderNumber
         self.customer = customer
         self.deliveryMethod = deliveryMethod
         self.paymentMethod = paymentMethod
         self.orderStatus = orderStatus
+        self.orderDate = orderDate or date.today()
 
     def calculate_total(self):
         """

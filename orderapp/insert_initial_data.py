@@ -10,10 +10,6 @@ from orderapp.models.order import Order, OrderLine
 from orderapp.models.payment import CreditCardPayment, DebitCardPayment
 from orderapp.config import Config
 
-# current_dir = os.path.dirname(os.path.abspath(__file__))
-# project_root = os.path.dirname(current_dir)
-# sys.path.insert(0, project_root)
-
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
 
