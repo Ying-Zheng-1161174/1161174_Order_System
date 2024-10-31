@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS items;
 CREATE TABLE items (
         id INTEGER NOT NULL AUTO_INCREMENT, 
         type VARCHAR(50), 
-        stock INTEGER, 
+        stock FLOAT, 
         PRIMARY KEY (id)
 );
 

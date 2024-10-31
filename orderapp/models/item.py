@@ -12,7 +12,7 @@ class Item(db.Model):
 
     id = Column(Integer, primary_key=True)
     type = Column(String(50))
-    stock = Column(Integer, default=0) 
+    stock = Column(Float, default=0) 
     
     orderLines = relationship('OrderLine', back_populates='item')
 
@@ -236,7 +236,7 @@ class PremadeBox(Item):
         new_box = PremadeBox(
             boxSize=self.boxSize,
             numOfBoxes=1,
-            stock=1,
+            stock=self.stock,
             isCustom=True
         )
 
