@@ -448,7 +448,7 @@ class Customer(User):
                 if order.paymentMethod == 'Account':
                     refund_amount = order.calculate_total()
                     # Ensure the balance doesn't go below 0
-                    self.custBalance = max(0, self.custBalance - refund_amount)
+                    self.custBalance = round(max(0, self.custBalance - refund_amount), 2)
 
                 db.session.commit()
                 return True
