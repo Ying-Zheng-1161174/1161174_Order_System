@@ -103,7 +103,6 @@ class Order(db.Model):
             raise ValueError(f"Not enough stock. Available: {item.stock}, Requested: {quantity}")
         
         new_line = OrderLine(order=self, item=item, quantity=quantity)
-        self.order_lines.append(new_line)
         
         db.session.add(new_line)
         db.session.commit()
@@ -132,7 +131,7 @@ class OrderLine(db.Model):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'))
     item_id = Column(Integer, ForeignKey('items.id'))
-    quantity = Column(Integer, nullable=False)
+    quantity = Column(Float, nullable=False)
     subtotal = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="order_lines")

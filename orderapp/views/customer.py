@@ -71,7 +71,7 @@ def add_to_cart():
             item = PremadeBox.query.get_or_404(item_id)
             
             # Create a customized premade box if it is a customized premade box
-            if customize_box:
+            if customize_box and request.form.getlist('custom_veggies'):
                 custom_veggie_ids = request.form.getlist('custom_veggies')
                 item = item.create_custom_box(custom_veggie_ids, session['id'])
                 db.session.commit()

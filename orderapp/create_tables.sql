@@ -58,17 +58,6 @@ CREATE TABLE veggies (
         FOREIGN KEY(id) REFERENCES items (id)
 );
 
-DROP TABLE IF EXISTS premade_boxes;
-CREATE TABLE premade_boxes (
-        id INTEGER NOT NULL, 
-        `boxSize` ENUM('Small','Medium','Large') NOT NULL, 
-        `numOfBoxes` INTEGER NOT NULL, 
-        price FLOAT NOT NULL, 
-        `isCustom` BOOL, 
-        PRIMARY KEY (id), 
-        FOREIGN KEY(id) REFERENCES items (id)
-);
-
 DROP TABLE IF EXISTS weighted_veggies;
 CREATE TABLE weighted_veggies (
         id INTEGER NOT NULL, 
@@ -96,16 +85,15 @@ CREATE TABLE unit_price_veggies (
         FOREIGN KEY(id) REFERENCES veggies (id)
 );
 
-DROP TABLE IF EXISTS box_contents;
-CREATE TABLE box_contents (
-        box_id INTEGER, 
-        veggie_id INTEGER, 
-        customer_id INTEGER, 
-        order_id INTEGER, 
-        FOREIGN KEY(box_id) REFERENCES premade_boxes (id), 
-        FOREIGN KEY(veggie_id) REFERENCES veggies (id), 
-        FOREIGN KEY(customer_id) REFERENCES customers (id), 
-        FOREIGN KEY(order_id) REFERENCES orders (id)
+DROP TABLE IF EXISTS premade_boxes;
+CREATE TABLE premade_boxes (
+        id INTEGER NOT NULL, 
+        `boxSize` ENUM('Small','Medium','Large') NOT NULL, 
+        `numOfBoxes` INTEGER NOT NULL, 
+        price FLOAT NOT NULL, 
+        `isCustom` BOOL, 
+        PRIMARY KEY (id), 
+        FOREIGN KEY(id) REFERENCES items (id)
 );
 
 DROP TABLE IF EXISTS orders;
@@ -127,7 +115,7 @@ CREATE TABLE order_lines (
         id INTEGER NOT NULL AUTO_INCREMENT, 
         order_id INTEGER, 
         item_id INTEGER, 
-        quantity INTEGER NOT NULL, 
+        quantity FLOAT NOT NULL, 
         subtotal FLOAT NOT NULL, 
         PRIMARY KEY (id), 
         FOREIGN KEY(order_id) REFERENCES orders (id), 
@@ -172,4 +160,16 @@ CREATE TABLE account_payments (
         id INTEGER NOT NULL, 
         PRIMARY KEY (id), 
         FOREIGN KEY(id) REFERENCES payments (id)
+);
+
+DROP TABLE IF EXISTS box_contents;
+CREATE TABLE box_contents (
+        box_id INTEGER, 
+        veggie_id INTEGER, 
+        customer_id INTEGER, 
+        order_id INTEGER, 
+        FOREIGN KEY(box_id) REFERENCES premade_boxes (id), 
+        FOREIGN KEY(veggie_id) REFERENCES veggies (id), 
+        FOREIGN KEY(customer_id) REFERENCES customers (id), 
+        FOREIGN KEY(order_id) REFERENCES orders (id)
 );

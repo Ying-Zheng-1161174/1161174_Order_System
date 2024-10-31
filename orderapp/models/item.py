@@ -224,7 +224,8 @@ class PremadeBox(Item):
         """
         Set the default contents of the premade box.
         """
-        self.contents = veggies
+        available_veggies = [v for v in veggies if v.stock > 0]
+        self.contents = available_veggies
 
     def create_custom_box(self, custom_veggie_ids, customer_id):
         """

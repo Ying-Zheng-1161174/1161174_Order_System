@@ -153,31 +153,22 @@
                                 </div>
                                 
                                 <div id="customOptions{{ box.id }}" style="display: none;">
-                                    <h6>Choose your veggies:</h6>
-                                    {% for veggie in veggies.weighted %}
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
-                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
-                                                {{ veggie.vegName }}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
-                                    {% for veggie in veggies.pack %}
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
-                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
-                                                {{ veggie.vegName }}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
-                                    {% for veggie in veggies.unit_price %}
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="custom_veggies" value="{{ veggie.id }}" id="veggie{{ veggie.id }}">
-                                            <label class="form-check-label" for="veggie{{ veggie.id }}">
-                                                {{ veggie.vegName }}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
+                                    {% set max_selections = 3 if box.boxSize == 'Small' else (6 if box.boxSize == 'Medium' else 10) %}
+                                    <p class="text-muted">You can select up to {{ max_selections }} items</p>
+                                    <div class="veggie-options" data-max-selections="{{ max_selections }}">
+                                        {% for veggie in veggies.weighted + veggies.pack + veggies.unit_price %}
+                                            <div class="form-check">
+                                                <input class="form-check-input veggie-checkbox" 
+                                                       type="checkbox" 
+                                                       name="custom_veggies" 
+                                                       value="{{ veggie.id }}" 
+                                                       id="veggie{{ veggie.id }}_{{ box.id }}">
+                                                <label class="form-check-label" for="veggie{{ veggie.id }}_{{ box.id }}">
+                                                    {{ veggie.vegName }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                                 
                                 <div class="input-group mb-3">
@@ -224,6 +215,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const boxId = this.id.replace('customizeBox', '');
             const customOptions = document.getElementById(`customOptions${boxId}`);
             customOptions.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+
+    document.querySelectorAll('.veggie-options').forEach(optionsContainer => {
+        const maxSelections = parseInt(optionsContainer.dataset.maxSelections);
+        const checkboxes = optionsContainer.querySelectorAll('.veggie-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const selectedCount = optionsContainer.querySelectorAll('.veggie-checkbox:checked').length;
+                if (selectedCount > maxSelections) {
+                    checkbox.checked = false;
+                }
+            });
         });
     });
 });

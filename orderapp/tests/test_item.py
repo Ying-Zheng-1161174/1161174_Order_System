@@ -17,6 +17,8 @@ def test_weighted_veggie(mock_db_session):
         weightPerKilo=1.99,
         stock=10
     )
+    mock_db_session.add(weighted_veggie)
+    mock_db_session.commit()
     return weighted_veggie
 
 @pytest.fixture(scope='function')
@@ -28,6 +30,8 @@ def test_pack_veggie(mock_db_session):
         pricePerPack=3.99,
         stock=10
     )
+    mock_db_session.add(pack_veggie)
+    mock_db_session.commit()
     return pack_veggie
 
 @pytest.fixture(scope='function')
@@ -39,6 +43,8 @@ def test_unit_price_veggie(mock_db_session):
         pricePerUnit=2.99,
         stock=10
     )
+    mock_db_session.add(unit_price_veggie)
+    mock_db_session.commit()
     return unit_price_veggie
 
 @pytest.fixture(scope='function')
@@ -61,6 +67,8 @@ def test_premade_box(mock_db_session):
             stock=10
         )
     ]
+    mock_db_session.add(premade_box)
+    mock_db_session.commit()
     return premade_box
 
 # Basic creation tests

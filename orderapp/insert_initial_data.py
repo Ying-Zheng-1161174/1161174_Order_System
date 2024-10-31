@@ -55,6 +55,7 @@ def insert_initial_data():
         PackVeggie(vegName="Celery", numOfPack=1, pricePerPack=3.99, stock=75),
         PackVeggie(vegName="Lettuce", numOfPack=1, pricePerPack=2.99, stock=90),
         PackVeggie(vegName="Spinach", numOfPack=1, pricePerPack=3.50, stock=70),
+        PackVeggie(vegName="Cabbage", numOfPack=1, pricePerPack=4.50, stock=0),
         UnitPriceVeggie(vegName="Feijoa", quantity=1, pricePerUnit=0.99, stock=200),
         UnitPriceVeggie(vegName="Avocado", quantity=1, pricePerUnit=1.99, stock=150),
         UnitPriceVeggie(vegName="Cucumber", quantity=1, pricePerUnit=1.99, stock=100),  

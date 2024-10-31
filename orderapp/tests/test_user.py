@@ -19,6 +19,8 @@ def test_staff(mock_db_session):
         password='123',
         deptName='Sales'
     )
+    mock_db_session.add(staff)
+    mock_db_session.commit()
     return staff
 
 @pytest.fixture(scope='function')
@@ -33,6 +35,8 @@ def test_customer(mock_db_session):
         balance=0.0,
         maxOwing=100.0
     )
+    mock_db_session.add(customer)
+    mock_db_session.commit()
     return customer
 
 @pytest.fixture(scope='function')
@@ -180,15 +184,33 @@ def test_customer_view_premade_boxes(test_customer, mock_premade_boxes):
     
     assert boxes == [mock_premade_boxes]
 
-@patch('orderapp.models.order.Order')
+@patch('orderapp.models.user.Order')
 def test_customer_place_order(mock_order, test_customer, mock_db_session):
     """Test the place_order method in Customer class"""
+    # Mock the scalar call for max order number
     mock_db_session.query.return_value.scalar.return_value = 999
-    
+
+    # Create a mock order instance
+    mock_order_instance = Mock()
+    mock_order.return_value = mock_order_instance
+
+    # Call the place_order method
     order = test_customer.place_order('Delivery', 'Credit Card')
-    
-    assert mock_db_session.add.called
-    assert mock_db_session.commit.called
+
+    # Verify the Order class was instantiated with correct parameters
+    mock_order.assert_called_once_with(
+        orderNumber='1000',  
+        customer=test_customer,
+        deliveryMethod='Delivery',
+        paymentMethod='Credit Card',
+    )
+
+    # Verify the order was added to the database and committed
+    mock_db_session.add.assert_called_with(mock_order_instance)
+    mock_db_session.commit.assert_any_call()
+
+    # Verify the returned order is the mock order instance
+    assert order == mock_order_instance
 
 @patch('orderapp.models.payment.Payment')
 def test_customer_make_payment(mock_payment, test_customer, mock_db_session):
